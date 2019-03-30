@@ -1,4 +1,11 @@
 #include <Arduino.h>
+#include "DHT.h"
+
+#define ANALOGOUT 3
+#define DHTPIN 2     // Digital pin connected to the DHT sensor
+#define DHTTYPE DHT11   // DHT 11
+
+DHT dht(DHTPIN, DHTTYPE); // Initialize DHT sensor.
 
 //{READ IN VAL, TEMP(C)}
 double therm[][2] = {{0, 400.0},
@@ -32,6 +39,7 @@ double getTemp(double valIn) {
 
     }
   }
+  return -255;
 }
 
 // ----------------------------------------------------------------------------
@@ -39,13 +47,25 @@ double getTemp(double valIn) {
 void setup() {
   pinMode(A0, INPUT);
   Serial.begin(9600);
+  pinMode(ANALOGOUT, OUTPUT);
+
+  dht.begin();
 }
 
 void loop() {
     int val1 = analogRead(A0);
     double temp1 = getTemp(val1);
+
+    float chamberT = dht.readTemperature();
     //Serial.print(val1);
-    Serial.println(temp1);
+
+    int output = ((70-temp1)*255/70.0);
+    Serial.print(temp1);
+    Serial.print(',');
+    Serial.println(chamberT);
+    //Serial.println(output);
+
+    analogWrite(ANALOGOUT, output);
 
     delay(250);
 }
