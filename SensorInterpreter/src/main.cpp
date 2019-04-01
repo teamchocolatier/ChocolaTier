@@ -5,6 +5,12 @@
 #define DHTPIN 2     // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT11   // DHT 11
 
+#define THERM1 A0
+#define THERM2 A2
+#define THERM3 A3
+#define THERM4 A4
+#define THERM5 A5
+
 DHT dht(DHTPIN, DHTTYPE); // Initialize DHT sensor.
 
 //{READ IN VAL, TEMP(C)}
@@ -45,7 +51,11 @@ double getTemp(double valIn) {
 // ----------------------------------------------------------------------------
 
 void setup() {
-  pinMode(A0, INPUT);
+  pinMode(THERM1, INPUT);
+  pinMode(THERM2, INPUT);
+  pinMode(THERM3, INPUT);
+  pinMode(THERM4, INPUT);
+  pinMode(THERM5, INPUT);
   Serial.begin(9600);
   pinMode(ANALOGOUT, OUTPUT);
 
@@ -53,8 +63,11 @@ void setup() {
 }
 
 void loop() {
-    int val1 = analogRead(A0);
-    double temp1 = getTemp(val1);
+    double temp1 = getTemp(analogRead(THERM1));
+    double temp2 = getTemp(analogRead(THERM2));
+    double temp3 = getTemp(analogRead(THERM3));
+    double temp4 = getTemp(analogRead(THERM4));
+    double temp5 = getTemp(analogRead(THERM5));
 
     float chamberT = dht.readTemperature();
     //Serial.print(val1);
@@ -62,7 +75,14 @@ void loop() {
     int output = ((70-temp1)*255/70.0);
     Serial.print(temp1);
     Serial.print(',');
-    Serial.println(chamberT);
+    Serial.print(temp2);
+    Serial.print(',');
+    Serial.print(temp3);
+    Serial.print(',');
+    Serial.print(temp4);
+    Serial.print(',');
+    Serial.println(temp5);
+    //Serial.println(chamberT);
     //Serial.println(output);
 
     analogWrite(ANALOGOUT, output);
