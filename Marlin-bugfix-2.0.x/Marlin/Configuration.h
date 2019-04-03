@@ -571,10 +571,10 @@
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
 #define USE_XMIN_PLUG
-#define USE_YMIN_PLUG
+//#define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
 //#define USE_XMAX_PLUG
-//#define USE_YMAX_PLUG //EW - eventually use this one? gives compiling errors
+#define USE_YMAX_PLUG //EW - eventually use this one? gives compiling errors
 //#define USE_ZMAX_PLUG
 
 // Enable pullup for all endstops to prevent a floating state
@@ -684,14 +684,15 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 1600, 500 } //EW - Z changed from default of 4000
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 500 } //EW - 1600 for IGUS Z changed from default of 4000
+//Z-axis leadscrew https://www.amazon.com/Witbot-Pillow-Bearing-Coupler-Printer/dp/B074Z4Q23M/ref=sr_1_4?ie=UTF8&qid=1549046242&sr=8-4&keywords=lead%20screw
 
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 300, 300, 10, 25 } //E-double speed
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -859,7 +860,7 @@
  // EW - as of 3/24/19 3pm
 #define X_PROBE_OFFSET_FROM_EXTRUDER -18.734  // X offset: -left  +right  [of the nozzle]
 #define Y_PROBE_OFFSET_FROM_EXTRUDER 42.122  // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER -1   // Z offset: -below +above  [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER .5   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
 #define MIN_PROBE_EDGE 10
@@ -949,8 +950,8 @@
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
 #define INVERT_X_DIR false
-#define INVERT_Y_DIR false //EW changed to false
-#define INVERT_Z_DIR false
+#define INVERT_Y_DIR false //EW if false, X and Y are reversed
+#define INVERT_Z_DIR true
 
 // @section extruder
 
@@ -974,14 +975,14 @@
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
 #define X_HOME_DIR -1
-#define Y_HOME_DIR -1
+#define Y_HOME_DIR 1 //EW - changed to max for Y_Max_Endstop, changed back to -1
 #define Z_HOME_DIR -1
 
 // @section machine
 
 // The size of the print bed
 #define X_BED_SIZE 200
-#define Y_BED_SIZE 200
+#define Y_BED_SIZE 170 //EW - changed from 200
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -989,7 +990,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 150 //EW - changed from default of 200
+#define Z_MAX_POS 155 //EW - changed from default of 200
 
 /**
  * Software Endstops
@@ -1092,7 +1093,7 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
- #define AUTO_BED_LEVELING_BILINEAR
+#define AUTO_BED_LEVELING_BILINEAR //This one works too
 //#define AUTO_BED_LEVELING_UBL //EW - recommended in Marlin documentation, off for now
 //#define MESH_BED_LEVELING
 
@@ -1141,10 +1142,10 @@
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
-  #define LEFT_PROBE_BED_POSITION  50// EW - set these randomly MIN_PROBE_EDGE
-  #define RIGHT_PROBE_BED_POSITION 150 // (X_BED_SIZE - (MIN_PROBE_EDGE))
+  #define LEFT_PROBE_BED_POSITION  25// EW - set these randomly MIN_PROBE_EDGE
+  #define RIGHT_PROBE_BED_POSITION 175 // (X_BED_SIZE - (MIN_PROBE_EDGE))
   #define FRONT_PROBE_BED_POSITION 50//MIN_PROBE_EDGE
-  #define BACK_PROBE_BED_POSITION 150// (Y_BED_SIZE - (MIN_PROBE_EDGE))
+  #define BACK_PROBE_BED_POSITION 145// (Y_BED_SIZE - (MIN_PROBE_EDGE))
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -1269,7 +1270,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (4*60)
+#define HOMING_FEEDRATE_Z  (6*60) //EW - changed from 4 to 6
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
