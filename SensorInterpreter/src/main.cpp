@@ -2,6 +2,7 @@
 #include "DHT.h"
 
 #define ANALOGOUT 3
+#define ANALOGOUT2 10
 #define DHTPIN 2     // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT11   // DHT 11
 
@@ -58,6 +59,7 @@ void setup() {
   pinMode(THERM5, INPUT);
   Serial.begin(9600);
   pinMode(ANALOGOUT, OUTPUT);
+  pinMode(ANALOGOUT2, OUTPUT);
 
   dht.begin();
 }
@@ -69,23 +71,23 @@ void loop() {
     double temp4 = getTemp(analogRead(THERM4));
     double temp5 = getTemp(analogRead(THERM5));
 
-    float chamberT = dht.readTemperature();
+    //float chamberT = dht.readTemperature();
     //Serial.print(val1);
-
-    int output = ((70-temp1)*255/70.0);
+    double aveT = (temp1+temp3)/2.0;
+    int output = ((70-aveT)*255/70.0);
+    //int output2 = ((70-temp2)*255/70.0);
     Serial.print(temp1);
     Serial.print(',');
     Serial.print(temp2);
     Serial.print(',');
     Serial.print(temp3);
-    Serial.print(',');
-    Serial.print(temp4);
-    Serial.print(',');
-    Serial.println(temp5);
+    Serial.print(", aveT = ");
+    Serial.println(aveT);
     //Serial.println(chamberT);
     //Serial.println(output);
 
     analogWrite(ANALOGOUT, output);
+    //analogWrite(ANALOGOUT2, output2);
 
     delay(250);
 }
