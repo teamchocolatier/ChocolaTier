@@ -858,8 +858,8 @@
  *    (0,0)
  */
  // EW - as of 3/24/19 3pm
-#define X_PROBE_OFFSET_FROM_EXTRUDER -18.734  // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER 42.122  // Y offset: -front +behind [the nozzle]
+#define X_PROBE_OFFSET_FROM_EXTRUDER -20.7// -18.734  // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 47.05//42.122  // Y offset: -front +behind [the nozzle]
 #define Z_PROBE_OFFSET_FROM_EXTRUDER .5   // Z offset: -below +above  [the nozzle]
 
 // Certain types of probes need to stay away from edges
@@ -1145,7 +1145,7 @@
   #define LEFT_PROBE_BED_POSITION  25// EW - set these randomly MIN_PROBE_EDGE
   #define RIGHT_PROBE_BED_POSITION 175 // (X_BED_SIZE - (MIN_PROBE_EDGE))
   #define FRONT_PROBE_BED_POSITION 50//MIN_PROBE_EDGE
-  #define BACK_PROBE_BED_POSITION 145// (Y_BED_SIZE - (MIN_PROBE_EDGE))
+  #define BACK_PROBE_BED_POSITION 155// (Y_BED_SIZE - (MIN_PROBE_EDGE))
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -1270,7 +1270,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (6*60) //EW - changed from 4 to 6
+#define HOMING_FEEDRATE_Z  (5*60) //EW - changed from 4 to 6
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
