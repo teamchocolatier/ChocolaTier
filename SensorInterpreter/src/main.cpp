@@ -1,20 +1,20 @@
 #include <Arduino.h>
-#include "DHT.h"
 
+// OUTPUT PINS
 #define ANALOGOUT 3
 #define ANALOGOUT2 10
-#define DHTPIN 2     // Digital pin connected to the DHT sensor
-#define DHTTYPE DHT11   // DHT 11
 
+// THERMISTOR PINS
 #define THERM1 A0
 #define THERM2 A2
 #define THERM3 A3
 #define THERM4 A4
 #define THERM5 A5
 
-DHT dht(DHTPIN, DHTTYPE); // Initialize DHT sensor.
+// CUTOFF FREQ FOR LP (in Hz)
+#define FC     0.25
 
-//{READ IN VAL, TEMP(C)}
+// THERMISTOR LOOKUP TABLE {READ IN VAL, TEMP(C)}
 double therm[][2] = {{0, 400.0},
 {2, 275.0},
 {11, 175.0},
@@ -36,6 +36,7 @@ double therm[][2] = {{0, 400.0},
 {845, 0.0},
 {1024, -50.0}};
 
+// HELPER FUNCTION: input analogRead value, outputs temperature in Celcius
 double getTemp(double valIn) {
   int i;
   for (i = 0; i < 19; i++) {
@@ -52,42 +53,60 @@ double getTemp(double valIn) {
 // ----------------------------------------------------------------------------
 
 void setup() {
+  Serial.begin(9600); // for debugging
+
+  // set input pins
   pinMode(THERM1, INPUT);
   pinMode(THERM2, INPUT);
   pinMode(THERM3, INPUT);
   pinMode(THERM4, INPUT);
   pinMode(THERM5, INPUT);
-  Serial.begin(9600);
+
+  // set output pins
   pinMode(ANALOGOUT, OUTPUT);
   pinMode(ANALOGOUT2, OUTPUT);
-
-  dht.begin();
 }
 
 void loop() {
+    double dt = 0.250;  // loop time in seconds
+    static unsigned long millisLast = 0; // elapsed time at end of last call to loop
+    static double aveT1 = 22; ; // EXTRUDER TEMP : initialize to room temp
+    static double aveT2 = 22; ; // NOZZLE TEMP   : initialize to room temp
+
+    // READ TEMPERATURES
     double temp1 = getTemp(analogRead(THERM1));
     double temp2 = getTemp(analogRead(THERM2));
     double temp3 = getTemp(analogRead(THERM3));
     double temp4 = getTemp(analogRead(THERM4));
     double temp5 = getTemp(analogRead(THERM5));
 
-    //float chamberT = dht.readTemperature();
-    //Serial.print(val1);
-    double aveT = (temp1+temp3)/2.0;
-    int output = ((70-aveT)*255/70.0);
-    //int output2 = ((70-temp2)*255/70.0);
+    // LOW PASS + AVERAGE
+    double beta = (6.283185*dt*FC)/(6.283185*dt*FC+1);
+    // aveT1 = (1-beta)*aveT1 + beta*(temp1+temp2+temp3)/3.0;  //LP-average
+    aveT1 = (1-beta)*aveT1 + beta*(temp1);  //LP-average using only THERM1
+    aveT2 = (1-beta)*aveT2 + beta*(temp4+temp5)/2.0;  //LP-average
+
+    // OUTPUT (using a sort of jank fix)
+    double sendT1 = (aveT1-1.47)/0.982; // Imaginary temperature that compensates for circuit offset
+    double sendT2 = (aveT1-1.47)/0.982; // Imaginary temperature that compensates for circuit offset
+    double output1 = constrain((70.0-sendT1)*255.0/70.0, 0, 255);
+    double output2 = constrain((70.0-sendT2)*255.0/70.0, 0, 255);
+    analogWrite(ANALOGOUT, (int) output1);
+    analogWrite(ANALOGOUT2, (int) output2);
+
+    // SERIAL OUT (FOR DEBUGGING)
+    // Serial.println(aveT1);
+
     Serial.print(temp1);
     Serial.print(',');
     Serial.print(temp2);
     Serial.print(',');
     Serial.print(temp3);
-    Serial.print(", aveT = ");
-    Serial.println(aveT);
-    //Serial.println(chamberT);
-    //Serial.println(output);
+    Serial.print(',');
+    Serial.print(temp4);
+    Serial.print(',');
+    Serial.println(temp5);
 
-    analogWrite(ANALOGOUT, output);
-    //analogWrite(ANALOGOUT2, output2);
-
-    delay(250);
+    while (millis() < millisLast + dt*1000); // wait until dt has passed
+    millisLast = millis();
 }
