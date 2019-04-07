@@ -88,7 +88,7 @@ void loop() {
 
     // OUTPUT (using a sort of jank fix)
     double sendT1 = (aveT1-1.47)/0.982; // Imaginary temperature that compensates for circuit offset
-    double sendT2 = (aveT1-1.47)/0.982; // Imaginary temperature that compensates for circuit offset
+    double sendT2 = (aveT2-1.47)/0.982; // Imaginary temperature that compensates for circuit offset
     double output1 = constrain((70.0-sendT1)*255.0/70.0, 0, 255);
     double output2 = constrain((70.0-sendT2)*255.0/70.0, 0, 255);
     analogWrite(ANALOGOUT, (int) output1);
