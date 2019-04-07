@@ -83,7 +83,7 @@ void loop() {
     // LOW PASS + AVERAGE
     double beta = (6.283185*dt*FC)/(6.283185*dt*FC+1);
     // aveT1 = (1-beta)*aveT1 + beta*(temp1+temp2+temp3)/3.0;  //LP-average
-    aveT1 = (1-beta)*aveT1 + beta*(temp1);  //LP-average using only THERM1
+    aveT1 = (1-beta)*aveT1 + beta*(temp1+temp2+temp3)/3.0;  //LP-average using only THERM1
     aveT2 = (1-beta)*aveT2 + beta*(temp4+temp5)/2.0;  //LP-average
 
     // OUTPUT (using a sort of jank fix)
@@ -105,7 +105,11 @@ void loop() {
     Serial.print(',');
     Serial.print(temp4);
     Serial.print(',');
-    Serial.println(temp5);
+    Serial.print(temp5);
+    Serial.print(", aveT1 = ");
+    Serial.print(aveT1);
+    Serial.print(", aveT2 = ");
+    Serial.println(aveT2);
 
     while (millis() < millisLast + dt*1000); // wait until dt has passed
     millisLast = millis();
