@@ -1143,7 +1143,7 @@
 
   // Set the boundaries for probing (where the probe can reach).
   #define LEFT_PROBE_BED_POSITION  25// EW - set these randomly MIN_PROBE_EDGE
-  #define RIGHT_PROBE_BED_POSITION 175 // (X_BED_SIZE - (MIN_PROBE_EDGE))
+  #define RIGHT_PROBE_BED_POSITION 135 // (X_BED_SIZE - (MIN_PROBE_EDGE))
   #define FRONT_PROBE_BED_POSITION 50//MIN_PROBE_EDGE
   #define BACK_PROBE_BED_POSITION 155// (Y_BED_SIZE - (MIN_PROBE_EDGE))
 
